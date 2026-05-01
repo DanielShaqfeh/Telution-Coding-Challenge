@@ -20,29 +20,27 @@
 ```bash
 # Clone the repository
 git clone https://github.com/DanielShaqfeh/Telution-Coding-Challenge.git
-cd telution-challenge
+cd Telution-Coding-Challenge
 
-# Enter the backend folder and set up the environment
+# Set up the environment file
 cd backend
 cp .env.example .env
-
-# Install PHP dependencies
-composer install
-
-# Generate JWT keys
-php bin/console lexik:jwt:generate-keypair
-
-# Return to root and start everything
 cd ..
 
-# Start all services (backend + frontend)
+# Build and start all services (backend + frontend)
 docker-compose up --build -d
+
+# Generate JWT keys inside the container
+docker-compose exec backend php bin/console lexik:jwt:generate-keypair
 
 # Run migrations (first time only)
 docker-compose exec backend php bin/console doctrine:migrations:migrate
 
 # (Optional) Seed sample data
 docker-compose exec backend php bin/console doctrine:fixtures:load
+
+# Restart backend so it picks up the new JWT keys
+docker-compose restart backend
 
 # Frontend will be available at http://localhost:4200
 # Backend API at http://localhost:8000
