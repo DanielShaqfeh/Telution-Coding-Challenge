@@ -1,0 +1,11 @@
+client_email,description,quantity,unit_price
+alice@techcorp.com,API Integration,3,200.00
+bob@designstudio.com,Banner Design,2,150.00
+carol@marketingpro.com,SEO Audit,1,800.00
+david@cloudservices.com,Server Monitoring,12,50.00
+emma@startupxyz.com,Mobile App Development,15,120.00
+alice@techcorp.com,Code Review,4,100.00
+bob@designstudio.com,Icon Set Design,1,350.00
+invalid@notexist.com,Ghost Service,1,100.00
+carol@marketingpro.com,Email Campaign,5,75.00
+david@cloudservices.com,Backup Setup,1,300.00

@@ -1,0 +1,39 @@
+/* Card */
+.card-create { max-width: 860px; }
+
+/* Breadcrumb Link */
+.breadcrumb-link { color: inherit; text-decoration: none; }
+.breadcrumb-link:hover { text-decoration: underline; }
+
+/* Line Items Header */
+.items-row-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.items-label { margin: 0; font-size: 14px; }
+
+/* Line Items Table */
+.items-table input { width: 100%; }
+.items-table td { vertical-align: middle; }
+
+.col-qty    { width: 110px; }
+.col-price  { width: 140px; }
+.col-sub    { width: 130px; }
+.col-action { width: 44px; }
+
+/* Form Actions */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* Responsive */
+@media (max-width: 767px) {
+  .card-create { max-width: 100%; }
+  .col-qty, .col-price, .col-sub { width: auto; }
+  .form-actions { flex-direction: column-reverse; }
+  .form-actions .btn { width: 100%; justify-content: center; }
+}

@@ -1,0 +1,88 @@
+<!-- Topbar -->
+<div class="topbar">
+  <div class="breadcrumb">
+    <a class="breadcrumb-link" routerLink="/invoices">Invoices</a>
+    <span class="breadcrumb-sep">›</span>
+    <span class="breadcrumb-current">New Invoice</span>
+  </div>
+</div>
+
+<!-- Page -->
+<div class="page">
+  <div class="page-header">
+    <div class="page-title">Create Invoice</div>
+    <div class="page-subtitle">Select a client and add line items to generate an invoice.</div>
+  </div>
+
+  <div class="alert alert-success" *ngIf="success">Invoice created successfully! Redirecting...</div>
+  <div class="alert alert-error" *ngIf="error">{{ error }}</div>
+
+  <div class="card card-create">
+    <div class="card-header">
+      <span class="card-title">Invoice Details</span>
+    </div>
+    <div class="card-body">
+
+      <div class="form-group">
+        <label>Client</label>
+        <select [(ngModel)]="selectedClientId">
+          <option [ngValue]="null" disabled>Select a client...</option>
+          <option *ngFor="let c of clients" [ngValue]="c.id">
+            {{ c.name }}{{ c.company ? ' — ' + c.company : '' }}
+          </option>
+        </select>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="items-row-header">
+        <label class="items-label">Line Items</label>
+        <button class="btn btn-secondary" type="button" (click)="addItem()">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+          </svg>
+          Add Item
+        </button>
+      </div>
+
+      <div class="table-wrap">
+        <table class="items-table">
+          <thead>
+            <tr>
+              <th>Description</th>
+              <th class="col-qty">Qty</th>
+              <th class="col-price">Unit Price ($)</th>
+              <th class="col-sub">Subtotal</th>
+              <th class="col-action"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of items; let i = index">
+              <td><input type="text" [(ngModel)]="item.description" placeholder="e.g. Web Development" /></td>
+              <td><input type="number" [(ngModel)]="item.quantity" min="1" /></td>
+              <td><input type="number" [(ngModel)]="item.unitPrice" min="0" step="0.01" /></td>
+              <td class="td-amount">${{ (item.quantity * item.unitPrice) | number:'1.2-2' }}</td>
+              <td><button class="btn-danger-ghost" type="button" (click)="removeItem(i)" [disabled]="items.length === 1">✕</button></td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3">Total</td>
+              <td class="td-amount">${{ total | number:'1.2-2' }}</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="form-actions">
+        <a class="btn btn-secondary" routerLink="/invoices">Cancel</a>
+        <button class="btn btn-primary" type="button" (click)="submit()" [disabled]="submitting">
+          {{ submitting ? 'Creating...' : 'Create Invoice' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

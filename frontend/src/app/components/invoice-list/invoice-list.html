@@ -1,0 +1,192 @@
+<!-- Topbar -->
+<div class="topbar">
+  <div class="breadcrumb">
+    <span class="breadcrumb-current">Invoices</span>
+  </div>
+  <div class="topbar-actions">
+    <button class="btn btn-secondary" (click)="exportCsv()">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+      </svg>
+      Export CSV
+    </button>
+    <a class="btn btn-primary" routerLink="/invoices/create">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+      </svg>
+      New Invoice
+    </a>
+  </div>
+</div>
+
+<!-- Item Detail Modal -->
+<div class="modal-backdrop" *ngIf="modalItem" (click)="closeModal()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-title">Item Details</div>
+      <button class="modal-close" (click)="closeModal()">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-meta">
+        <span class="modal-meta-label">Invoice</span>
+        <span class="modal-meta-value td-mono">#{{ modalInvoice?.id }}</span>
+      </div>
+      <div class="modal-meta">
+        <span class="modal-meta-label">Client</span>
+        <span class="modal-meta-value">{{ modalInvoice?.client?.name }}</span>
+      </div>
+      <div *ngIf="modalInvoice?.client?.company" class="modal-meta">
+        <span class="modal-meta-label">Company</span>
+        <span class="modal-meta-value">{{ modalInvoice?.client?.company }}</span>
+      </div>
+      <hr class="divider modal-divider" />
+      <div class="modal-field">
+        <div class="modal-field-label">Description</div>
+        <div class="modal-desc">{{ modalItem?.description }}</div>
+      </div>
+      <div class="modal-grid-3">
+        <div class="modal-stat">
+          <div class="modal-stat-label">Quantity</div>
+          <div class="modal-stat-value">{{ modalItem?.quantity }}</div>
+        </div>
+        <div class="modal-stat">
+          <div class="modal-stat-label">Unit Price</div>
+          <div class="modal-stat-value">${{ modalItem?.unitPrice }}</div>
+        </div>
+        <div class="modal-stat modal-stat-total">
+          <div class="modal-stat-label">Subtotal</div>
+          <div class="modal-stat-value">${{ modalItem?.subtotal }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Page -->
+<div class="page">
+  <div class="page-header">
+    <div class="page-title">Invoices</div>
+    <div class="page-subtitle">View and manage all invoices. Click a row to see line items.</div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Total Invoices</div>
+      <div class="stat-value">{{ total }}</div>
+      <div class="stat-hint">All time</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">This Page</div>
+      <div class="stat-value">{{ invoices.length }}</div>
+      <div class="stat-hint">of {{ limit }} per page</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Page</div>
+      <div class="stat-value">{{ page }} / {{ totalPages || 1 }}</div>
+      <div class="stat-hint">Navigate with arrows</div>
+    </div>
+  </div>
+
+  <!-- Table card -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Invoice Records</span>
+      <span class="badge badge-neutral">{{ total }} total</span>
+    </div>
+
+    <div class="table-wrap">
+      <table class="invoice-table">
+        <thead>
+          <tr>
+            <th>Invoice</th>
+            <th>Client</th>
+            <th>Company</th>
+            <th>Total</th>
+            <th>Date</th>
+            <th>Items</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="loading" class="loading-row">
+            <td colspan="6">Loading invoices...</td>
+          </tr>
+          <ng-container *ngFor="let invoice of invoices">
+            <tr class="invoice-row" (click)="toggleExpand(invoice.id)">
+              <td class="td-mono">#{{ invoice.id }}</td>
+              <td class="td-strong">{{ invoice.client.name }}</td>
+              <td>
+                <span *ngIf="invoice.client.company" class="badge badge-neutral">{{ invoice.client.company }}</span>
+                <span *ngIf="!invoice.client.company" class="td-muted">—</span>
+              </td>
+              <td class="td-amount">${{ invoice.total }}</td>
+              <td class="td-muted">{{ invoice.createdAt }}</td>
+              <td>
+                <span class="badge" [class.badge-blue]="expandedId === invoice.id" [class.badge-neutral]="expandedId !== invoice.id">
+                  {{ expandedId === invoice.id ? '▲ Hide' : invoice.items.length + ' items ▼' }}
+                </span>
+              </td>
+            </tr>
+            <tr class="invoice-expand" *ngIf="expandedId === invoice.id">
+              <td colspan="6">
+                <div class="expand-panel">
+                  <div class="expand-label">Line Items</div>
+                  <div class="items-grid">
+                    <div class="items-grid-head">
+                      <div class="ig-col ig-desc">Description</div>
+                      <div class="ig-col ig-qty">Qty</div>
+                      <div class="ig-col ig-price">Unit Price</div>
+                      <div class="ig-col ig-sub">Total</div>
+                      <div class="ig-col ig-action"></div>
+                    </div>
+                    <div class="items-grid-row" *ngFor="let item of invoice.items">
+                      <div class="ig-col ig-desc">
+                        <span class="desc-text">{{ item.description }}</span>
+                      </div>
+                      <div class="ig-col ig-qty">{{ item.quantity }}</div>
+                      <div class="ig-col ig-price">${{ item.unitPrice }}</div>
+                      <div class="ig-col ig-sub">${{ item.subtotal }}</div>
+                      <div class="ig-col ig-action">
+                        <button class="view-btn" (click)="openModal(invoice, item, $event)">View</button>
+                      </div>
+                    </div>
+                    <div class="items-grid-total">
+                      <div class="ig-col ig-desc ig-total-label">Invoice Total</div>
+                      <div class="ig-col ig-qty"></div>
+                      <div class="ig-col ig-price"></div>
+                      <div class="ig-col ig-sub ig-total-val">${{ invoice.total }}</div>
+                      <div class="ig-col ig-action"></div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+          <tr *ngIf="!loading && invoices.length === 0">
+            <td colspan="6">
+              <div class="empty-state">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <p>No invoices yet</p>
+                <span>Create your first invoice to get started</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination" *ngIf="total > limit">
+      <span>Showing {{ (page - 1) * limit + 1 }}–{{ page * limit > total ? total : page * limit }} of {{ total }} invoices</span>
+      <div class="pagination-controls">
+        <button class="page-btn" (click)="prevPage()" [disabled]="page === 1">‹</button>
+        <button class="page-btn" (click)="nextPage()" [disabled]="page >= totalPages">›</button>
+      </div>
+    </div>
+  </div>
+</div>

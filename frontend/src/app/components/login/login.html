@@ -1,0 +1,72 @@
+<div class="login-page">
+  <div class="login-card">
+
+    <!-- Brand -->
+    <div class="login-brand">
+      <div class="login-brand-icon">IV</div>
+      <div class="login-brand-name">InvoiceApp</div>
+    </div>
+
+    <h1 class="login-title">{{ mode === 'login' ? 'Welcome back' : 'Create account' }}</h1>
+    <p class="login-sub">{{ mode === 'login' ? 'Sign in to your account' : 'Fill in the details below to register' }}</p>
+
+    <!-- Success alert -->
+    <div class="alert alert-success" *ngIf="success">{{ success }}</div>
+
+    <!-- Error alert -->
+    <div class="alert alert-danger" *ngIf="error">{{ error }}</div>
+
+    <form (ngSubmit)="submit()" #f="ngForm">
+
+      <div class="form-group">
+        <label class="form-label" for="email">Email</label>
+        <input
+          id="email"
+          type="email"
+          class="form-control"
+          [class.input-error]="emailField.invalid && emailField.touched"
+          placeholder="you@example.com"
+          [(ngModel)]="email"
+          name="email"
+          required
+          pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}"
+          #emailField="ngModel"
+          autocomplete="email"
+        />
+        <div class="field-error" *ngIf="emailField.invalid && emailField.touched">
+          Please enter a valid email address.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          class="form-control"
+          placeholder="{{ mode === 'login' ? 'Your password' : 'At least 6 characters' }}"
+          [(ngModel)]="password"
+          name="password"
+          required
+          autocomplete="{{ mode === 'login' ? 'current-password' : 'new-password' }}"
+        />
+      </div>
+
+      <button type="submit" class="btn btn-primary login-btn" [disabled]="loading || !email || !password || f.invalid">
+        <svg *ngIf="loading" class="spin-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 12a8 8 0 0116 0"/>
+        </svg>
+        {{ loading ? 'Please wait…' : (mode === 'login' ? 'Sign in' : 'Create account') }}
+      </button>
+
+    </form>
+
+    <div class="login-switch">
+      {{ mode === 'login' ? "Don't have an account?" : 'Already have an account?' }}
+      <button class="switch-btn" type="button" (click)="switchMode()">
+        {{ mode === 'login' ? 'Register' : 'Sign in' }}
+      </button>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,38 @@
+security:
+  password_hashers:
+    App\Entity\User:
+      algorithm: auto
+
+  providers:
+    app_user_provider:
+      entity:
+        class: App\Entity\User
+        property: email
+
+  firewalls:
+    dev:
+      pattern: ^/(_(profiler|wdt)|css|images|js)/
+      security: false
+
+    # The login endpoint — handled by Symfony's json_login authenticator.
+    # On success LexikJWT's success handler returns the token automatically.
+    login:
+      pattern: ^/auth/login$
+      stateless: true
+      json_login:
+        check_path: auth_login
+        username_path: email
+        password_path: password
+        success_handler: lexik_jwt_authentication.handler.authentication_success
+        failure_handler: lexik_jwt_authentication.handler.authentication_failure
+
+    # All other routes require a valid JWT.
+    api:
+      pattern: ^/
+      stateless: true
+      jwt: ~
+
+  access_control:
+    - { path: ^/auth/login$,    roles: PUBLIC_ACCESS }
+    - { path: ^/auth/register$, roles: PUBLIC_ACCESS }
+    - { path: ^/,               roles: IS_AUTHENTICATED_FULLY }

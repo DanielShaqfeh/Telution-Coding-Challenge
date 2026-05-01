@@ -1,0 +1,72 @@
+/* Import Layout Grid */
+.import-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  max-width: 900px;
+  align-items: start;
+}
+
+/* Upload Zone */
+.upload-zone {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 40px 24px;
+  text-align: center;
+  cursor: pointer;
+  background: var(--surface);
+  transition: border-color var(--transition), background var(--transition);
+  display: block;
+}
+.upload-zone:hover { border-color: var(--blue); background: var(--blue-light); }
+.upload-zone svg {
+  width: 36px; height: 36px;
+  color: var(--text-muted);
+  margin: 0 auto 12px;
+  display: block;
+  transition: color var(--transition);
+}
+.upload-zone:hover svg { color: var(--blue); }
+.upload-zone p    { font-size: 14px; color: var(--text-secondary); font-weight: 500; }
+.upload-zone span { font-size: 12px; color: var(--text-muted); margin-top: 4px; display: block; }
+#file-input { display: none; }
+
+.btn-upload {
+  width: 100%;
+  margin-top: 14px;
+  justify-content: center;
+}
+
+/* Format Info */
+.alert-compact { margin-bottom: 16px; font-size: 13px; }
+
+/* Result Section */
+.result-wrapper {
+  max-width: 900px;
+  margin-top: 20px;
+}
+
+.result-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+.result-stat { border-radius: var(--radius-sm); padding: 16px 20px; text-align: center; border: 1px solid; }
+.result-stat.s-success { background: var(--success-bg); border-color: #a7f3d0; }
+.result-stat.s-total   { background: var(--surface-secondary); border-color: var(--border); }
+.result-stat.s-failed  { background: var(--danger-bg); border-color: #fecaca; }
+.r-value { font-size: 30px; font-weight: 700; display: block; letter-spacing: -0.04em; }
+.s-success .r-value { color: #059669; }
+.s-total   .r-value { color: var(--text-primary); }
+.s-failed  .r-value { color: #dc2626; }
+.r-label   { font-size: 12px; font-weight: 500; color: var(--text-secondary); margin-top: 4px; }
+
+.failed-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #dc2626;
+  margin-bottom: 10px;
+}
+
+/* Responsive */
+@media (max-width: 767px) {
+  .import-grid         { grid-template-columns: 1fr; }
+  .result-wrapper      { max-width: 100%; }
+  .result-grid         { grid-template-columns: 1fr; gap: 8px; }
+}

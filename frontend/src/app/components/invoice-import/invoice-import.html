@@ -1,0 +1,120 @@
+<!-- Topbar -->
+<div class="topbar">
+  <div class="breadcrumb">
+    <span class="breadcrumb-current">Import Invoices</span>
+  </div>
+</div>
+
+<!-- Page -->
+<div class="page">
+  <div class="page-header">
+    <div class="page-title">Import Invoices</div>
+    <div class="page-subtitle">Upload a CSV or Excel file to create invoices in bulk.</div>
+  </div>
+
+  <div class="alert alert-error" *ngIf="error">{{ error }}</div>
+
+  <div class="import-grid">
+
+    <!-- Upload -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Upload File</span>
+      </div>
+      <div class="card-body">
+        <input type="file" id="file-input" accept=".csv,.xlsx,.xls" (change)="onFileChange($event)" />
+        <label for="file-input" class="upload-zone">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+          </svg>
+          <p>{{ selectedFile ? selectedFile.name : 'Click to choose a file' }}</p>
+          <span>Supports .csv and .xlsx</span>
+        </label>
+        <button class="btn btn-primary btn-upload" (click)="upload()" [disabled]="!selectedFile || uploading">
+          {{ uploading ? 'Importing...' : 'Import Invoices' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Format info -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Required Format</span>
+      </div>
+      <div class="card-body">
+        <div class="alert alert-info alert-compact">
+          Each row creates one invoice with one line item.
+        </div>
+        <table>
+          <thead>
+            <tr><th>Column</th><th>Type</th><th>Required</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-mono">client_email</td>
+              <td class="td-muted">string</td>
+              <td><span class="badge badge-danger">Required</span></td>
+            </tr>
+            <tr>
+              <td class="td-mono">description</td>
+              <td class="td-muted">string</td>
+              <td><span class="badge badge-danger">Required</span></td>
+            </tr>
+            <tr>
+              <td class="td-mono">quantity</td>
+              <td class="td-muted">integer</td>
+              <td><span class="badge badge-danger">Required</span></td>
+            </tr>
+            <tr>
+              <td class="td-mono">unit_price</td>
+              <td class="td-muted">decimal</td>
+              <td><span class="badge badge-danger">Required</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Result -->
+  <div class="result-wrapper" *ngIf="result">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Import Summary</span>
+        <span class="badge" [class.badge-success]="result.failed.length === 0" [class.badge-danger]="result.failed.length > 0">
+          {{ result.failed.length === 0 ? 'All rows imported' : result.failed.length + ' rows failed' }}
+        </span>
+      </div>
+      <div class="card-body">
+        <div class="result-grid">
+          <div class="result-stat s-success">
+            <span class="r-value">{{ result.created }}</span>
+            <div class="r-label">Created</div>
+          </div>
+          <div class="result-stat s-total">
+            <span class="r-value">{{ result.total }}</span>
+            <div class="r-label">Total Rows</div>
+          </div>
+          <div class="result-stat s-failed">
+            <span class="r-value">{{ result.failed.length }}</span>
+            <div class="r-label">Failed</div>
+          </div>
+        </div>
+
+        <div *ngIf="result.failed.length > 0">
+          <hr class="divider" />
+          <div class="failed-title">Failed Rows</div>
+          <table>
+            <thead><tr><th>Row</th><th>Reason</th></tr></thead>
+            <tbody>
+              <tr *ngFor="let f of result.failed">
+                <td class="td-mono">#{{ f.row }}</td>
+                <td class="td-muted">{{ f.reason }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
