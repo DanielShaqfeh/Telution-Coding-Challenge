@@ -35,14 +35,12 @@ class ImportController extends AbstractController
 
         $rows = $this->parseFile($file->getPathname(), $extension);
 
-        $created = 0;
+        $created = 0; 
         $failed  = [];
 
-        // Group rows by clientEmail to batch invoices
         foreach ($rows as $index => $row) {
-            $rowNum = $index + 2; // +2 because row 1 is header
+            $rowNum = $index + 2; 
 
-            // Validate required fields
             $clientEmail = trim($row['client_email'] ?? '');
             $description = trim($row['description'] ?? '');
             $quantity    = $row['quantity'] ?? '';
@@ -95,8 +93,8 @@ class ImportController extends AbstractController
         $em->flush();
 
         return $this->json([
-            'created' => $created,
-            'failed'  => $failed,
+            'created' => $created, 
+            'failed'  => $failed, 
             'total'   => count($rows),
         ]);
     }

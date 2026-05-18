@@ -68,6 +68,19 @@ export class ApiService {
   }
 
   exportInvoices(): void {
-    window.open(`${this.base}/invoices/export`, '_blank');
+    this.http.get(`${this.base}/invoices/export`, { responseType: 'blob' }).subscribe(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'invoices.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
   }
+
+  /*   
+    exportInvoices(): void {
+      window.open(`${this.base}/invoices/export`, '_blank');
+    } 
+  */
 }

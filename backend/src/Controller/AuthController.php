@@ -18,7 +18,7 @@ class AuthController extends AbstractController
     #[Route('/login', name: 'auth_login', methods: ['POST'])]
     public function login(): JsonResponse
     {
-        // The firewall handles this. This code is never actually executed.
+        // The firewall handles this, never executes 
         return $this->json(['error' => 'Unexpected error'], 500);
     }
 

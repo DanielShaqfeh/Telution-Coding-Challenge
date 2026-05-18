@@ -20,7 +20,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError(err => {
-      // Token expired or invalid — redirect to login
+      // Token expired or invalid -> redirect to login
       if (err.status === 401 && !isAuthEndpoint) {
         auth.logout();
         router.navigate(['/login']);

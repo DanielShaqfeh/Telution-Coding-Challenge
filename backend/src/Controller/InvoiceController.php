@@ -101,12 +101,12 @@ class InvoiceController extends AbstractController
             foreach ($invoice->getItems() as $item) {
                 $rows[] = implode(',', [
                     $invoice->getId(),
-                    '"' . $invoice->getClient()->getName() . '"',
-                    $invoice->getClient()->getEmail(),
-                    '"' . $invoice->getClient()->getCompany() . '"',
+                    $this->csvEscape($invoice->getClient()->getName()),
+                    $this->csvEscape($invoice->getClient()->getEmail()),
+                    $this->csvEscape($invoice->getClient()->getCompany()),
                     $invoice->getTotal(),
                     $invoice->getCreatedAt()->format('Y-m-d H:i:s'),
-                    '"' . $item->getDescription() . '"',
+                    $this->csvEscape($item->getDescription()),
                     $item->getQuantity(),
                     $item->getUnitPrice(),
                     $item->getSubtotal(),
@@ -123,6 +123,12 @@ class InvoiceController extends AbstractController
         return $response;
     }
 
+    private function csvEscape(string $value): string
+    {
+        return '"' . str_replace('"', '""', $value) . '"'; 
+    }
+
+    // Helper to convert Invoice entity to array for JSON response
     private function serializeInvoice(Invoice $inv): array
     {
         return [

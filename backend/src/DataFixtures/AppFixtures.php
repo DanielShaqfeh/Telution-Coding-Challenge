@@ -70,7 +70,7 @@ class AppFixtures extends Fixture
                 ],
             ],
         ];
-
+        
         foreach ($invoicesData as $invoiceData) {
             $invoice = new Invoice();
             $invoice->setClient($clients[$invoiceData['client']]);

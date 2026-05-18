@@ -15,7 +15,7 @@ export class InvoiceListComponent implements OnInit {
   total = 0;
   limit = 10;
   loading = false;
-  expandedId: number | null = null;
+  expandedId: number | null = null; 
 
   // Modal
   modalItem: InvoiceItem | null = null;

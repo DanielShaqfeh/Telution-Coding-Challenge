@@ -108,8 +108,7 @@ class Client
 
     public function removeInvoice(Invoice $invoice): static
     {
-        if ($this->invoices->removeElement($invoice)) {
-            // set the owning side to null 
+        if ($this->invoices->removeElement($invoice)) { 
             if ($invoice->getClient() === $this) {
                 $invoice->setClient(null);
             }
